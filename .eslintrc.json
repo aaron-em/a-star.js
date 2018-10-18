@@ -1,0 +1,21 @@
+{
+  "extends": [
+    "airbnb-base",
+    "prettier"
+  ],
+  "plugins": [
+    "import"
+  ],
+  "rules": {
+    "no-extra-semi": "off",
+    "comma-dangle": ["error", "never"],
+    "no-multi-spaces": "off",
+    "arrow-parens": ["error", "always"],
+    "curly": ["error", "all"]
+  },
+  "env": {
+    "node": 8,
+    "mocha": true,
+    "browser": true
+  }
+}
