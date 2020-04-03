@@ -99,7 +99,7 @@ function drawMapWithBorder(map, pathPoints) {
   return withBorder(drawMap(map, pathPoints));
 }
 
-const width = 20;
+const width = 40;
 const height = 20;
 
 const maze = mapFromString(mazeAscii(width, height, { refine: false }));
