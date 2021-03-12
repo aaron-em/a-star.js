@@ -4,6 +4,31 @@ const mazeAscii = require('../maze-ascii/');
 
 const AStar = require('.');
 
+const chars = {
+  direction: {
+    upLeft: '↖',
+    up: '↑',
+    upRight: '↗',
+    left: '←',
+    right: '→',
+    downLeft: '↙',
+    down: '↓',
+    downRight: '↘'
+  },
+  wall: '░',
+  corridor: ' ',
+  examined: '·',
+  start: 'o',
+  finish: '★'
+};
+
+function drawLegend() {
+  const directions = Object.values(chars.direction).join('');
+  console.log(
+    `legend: path dirs ${directions}, examined locations ${chars.examined}, start ${chars.start}, finish ${chars.finish}`
+  );
+}
+
 function mapFromString(string) {
   return string
     .split(/\n/)
@@ -34,18 +59,18 @@ function withBorder(drawnMap) {
 function pathArrow(from, to) {
   const arrows = {
     '-1': {
-      '-1': '↖',
-      0: '↑',
-      1: '↗'
+      '-1': chars.direction.upLeft,
+      0: chars.direction.up,
+      1: chars.direction.upRight
     },
     0: {
-      '-1': '←',
-      1: '→'
+      '-1': chars.direction.left,
+      1: chars.direction.right
     },
     1: {
-      '-1': '↙',
-      0: '↓',
-      1: '↘'
+      '-1': chars.direction.downLeft,
+      0: chars.direction.down,
+      1: chars.direction.downRight
     }
   };
 
@@ -61,10 +86,10 @@ function drawMap(map, pathPoints) {
     let char;
 
     if (i === 0) {
-      char = 'o';
+      char = chars.start;
     }
     if (i === pathPoints.length - 1) {
-      char = '★';
+      char = chars.finish;
     }
     if (!char) {
       char = pathArrow(step, pathPoints[i - 1]);
@@ -82,10 +107,10 @@ function drawMap(map, pathPoints) {
     row.forEach((cell, i) => {
       /* eslint-disable no-param-reassign */
       if (cell === Infinity) {
-        cell = '░';
+        cell = chars.wall;
       }
       if (cell === 0) {
-        cell = ' ';
+        cell = chars.corridor;
       }
       row[i] = cell;
       /* eslint-enable no-param-reassign */
@@ -100,7 +125,7 @@ function drawMapWithBorder(map, pathPoints) {
 }
 
 const width = 40;
-const height = 20;
+const height = 7;
 
 const maze = mapFromString(mazeAscii(width, height, { refine: false }));
 
@@ -114,14 +139,16 @@ const Δt = t1 - t0;
 
 state.examined.queue.forEach((point) => {
   const v = maze[point.y][point.x];
-  maze[point.y][point.x] = v === 0 ? '·' : v;
+  maze[point.y][point.x] = v === 0 ? chars.examined : v;
 });
 
 /* eslint-disable no-console */
 if (path === null) {
-  console.log(`${drawMapWithBorder(maze, [start, end])}\n`);
+  console.log(`${drawMapWithBorder(maze, [start, end])}`);
+  drawLegend();
   console.log(`no path for ${maze.length} in ${Δt}sm\n`);
 } else {
-  console.log(`${drawMapWithBorder(maze, path)}\n`);
+  console.log(`${drawMapWithBorder(maze, path)}`);
+  drawLegend();
   console.log(`found path for ${maze.length} in ${Δt}ms\n`);
 }
